@@ -6,16 +6,18 @@ export default createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
-
+  
   html, body {
     width: 100%;
     height: 100%;
+    background-color: #fff;
   }
 
   *, button, input {
     border: 0;
     background: 0;
-    font-family: var(--roboto)
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }
 
   button:focus {
@@ -73,18 +75,15 @@ export default createGlobalStyle`
   :root {
     --container: 1280px;
 
-    --poppins: Poppins, Arial, sans-serif;
-    --roboto: 'Roboto', Arial, sans-serif;
-
-    --white: ${props => props.theme.colors.white},
-    --black: ${props => props.theme.colors.black},
-    --gray: ${props => props.theme.colors.gray},
-    --lightGray: ${props => props.theme.colors.lightGray},
-    --darkGray: ${props => props.theme.colors.darkGray},
-    --green: ${props => props.theme.colors.green},
-    --yellow: ${props => props.theme.colors.yellow},
-    --orange: ${props => props.theme.colors.orange},
-    --blue: ${props => props.theme.colors.blue},
+    --white: ${props => props.theme.colors.white};
+    --black: ${props => props.theme.colors.black};
+    --gray: ${props => props.theme.colors.gray};
+    --lightGray: ${props => props.theme.colors.lightGray};
+    --darkGray: ${props => props.theme.colors.darkGray};
+    --green: ${props => props.theme.colors.green};
+    --yellow: ${props => props.theme.colors.yellow};
+    --orange: ${props => props.theme.colors.orange};
+    --blue: ${props => props.theme.colors.blue};
 
     --background-light: ${props => props.theme.colors.backgroundLight};
     --background-dark: ${props => props.theme.colors.backgroundDark};
