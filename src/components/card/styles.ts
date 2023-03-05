@@ -6,7 +6,8 @@ interface Props {
 }
 
 export const Container = styled.div<Props>`
-  max-width: 300px;
+  /* max-width: 300px; */
+  width: 100%;
   min-width: 100px;
   height: 200px;
 

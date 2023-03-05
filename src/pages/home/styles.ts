@@ -2,7 +2,7 @@ import { List } from 'phosphor-react'
 import styled from 'styled-components'
 
 export const Container = styled.div`
-  width: 1400px;
+  width: calc(100% - var(--nav-width));
   height: 100%;
   padding-bottom: 50px;
   color: var(--black);
@@ -19,13 +19,15 @@ export const Container = styled.div`
   }
 
   .grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 50px;
+    gap: 100px;
 
     div.content {
+      flex: 1;
+      min-width: 300px;
       padding: 24px;
       strong {
         font-size: 24px;
@@ -51,13 +53,22 @@ export const Charts = styled.div`
   margin-top: 70px;
 
   .grid-chart-row-1 {
-    display: grid;
-    grid-template-columns: 3fr 0.5fr;
-    gap: 40px;
-  }
+    display: flex;
+    justify-content: space-between;
 
-  & > div div.container-chart {
-    background-color: var(--white);
+    gap: 90px;
+
+    & .container-chart {
+      background-color: var(--white);
+    }
+
+    & > .container-chart {
+      flex: 1;
+    }
+
+    .column {
+      flex: 3.5;
+    }
   }
 
   .chart-flex {
@@ -68,10 +79,11 @@ export const Charts = styled.div`
     padding: 10px 20px;
 
     .chart {
-      flex: 3.5 0 300px;
+      flex: 5 0 300px;
     }
 
-    div {
+    .calendar {
+      max-width: 300px;
       flex: 1 0 100px;
     }
   }

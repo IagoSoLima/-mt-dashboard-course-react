@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Card from '~/components/card'
 import SideBar from '~/components/side-bar'
 
@@ -6,85 +6,137 @@ import { Container, ListIcon, Charts } from './styles'
 import theme from '~/styles/theme'
 import { BarChart, DoughnutChart, LineChart } from '~/components/chart'
 import Calendar from '~/components/calendar'
+import {
+  datesRegistrationBarChartOptions,
+  registrationBarChartOptions,
+  percentageRegistrationDoughnutChat
+} from './char-options'
+import {
+  Day,
+  getTotalRegistrationByCourseDayInMonth,
+  getTotalRegistrationByCourseMonth,
+  getTotalRegistrationFake,
+  monthsType
+} from './fake'
+import { ChartData } from 'chart.js'
+import { removeDuplicateArrayValue } from '~/utils'
+import { getMaxValueInArray } from '~/utils/get-max-value-in-array.util'
 
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+interface CoursesByMonths {
+  name: string
+  data: Array<{
+    id: number
+    month: monthsType
+    total: number
+  }>
+}
+interface CoursesByDayInMonths {
+  name: string
+  data: Array<{
+    id: number
+    day: Day
+    total: number
+  }>
+}
 
-const courseA = [
-  { id: 1, month: 'Jan', userGain: 20 },
-  { id: 2, month: 'Feb', userGain: 27 },
-  { id: 3, month: 'Mar', userGain: 19 },
-  { id: 4, month: 'Apr', userGain: 25 },
-  { id: 5, month: 'May', userGain: 35 },
-  { id: 6, month: 'Jun', userGain: 25 },
-  { id: 7, month: 'Jul', userGain: 35 },
-  { id: 8, month: 'Aug', userGain: 28 },
-  { id: 9, month: 'Sep', userGain: 32 }
-]
-
-const courseB = [
-  { id: 1, month: 'Jan', userGain: 37 },
-  { id: 2, month: 'Feb', userGain: 42 },
-  { id: 3, month: 'Mar', userGain: 32 },
-  { id: 4, month: 'Apr', userGain: 5 },
-  { id: 5, month: 'May', userGain: 30 },
-  { id: 6, month: 'Jun', userGain: 45 },
-  { id: 7, month: 'Jul', userGain: 20 },
-  { id: 8, month: 'Aug', userGain: 23 },
-  { id: 9, month: 'Sep', userGain: 20 }
-]
-
-const courses = {
-  courseA: { label: 'Curso A', total: 565 },
-  courseB: { label: 'Curso B', total: 690 }
+interface Registered {
+  total: number
+  data: Array<{ label: string; total: number }>
 }
 
 const Home: React.FC = () => {
-  const [registered] = useState(1255)
-  const [userData] = useState({
-    labels: months.map(data => data),
-    datasets: [
-      {
-        label: 'CURSO A',
-        data: courseA.map(data => data.userGain),
-        backgroundColor: [theme.colors.blueDark, theme.colors.orange]
-      },
-      {
-        label: 'CURSO B',
-        data: courseB.map(data => data.userGain),
-        backgroundColor: [theme.colors.orange, theme.colors.blueDark]
-      }
-    ]
+  const [registered, setRegistered] = useState<Registered>({} as Registered)
+  const [maxValueCoursesByDayInMonth, setMaxValueCoursesByDayInMonth] =
+    useState(0)
+  const [coursesByMonths, setCourseByMonths] = useState<
+    CoursesByMonths[] | null
+  >(null)
+  const [coursesByDayInMonths, setCourseByDayInMonths] = useState<
+    CoursesByDayInMonths[] | null
+  >(null)
+
+  const [dataCoursesChart, setDataCoursesChart] = useState<ChartData<'bar'>>()
+  const [coursesDataPercentage, setCoursesDataPercentage] =
+    useState<ChartData<'doughnut'>>()
+  const [dataCoursesInMonthChart, setDataCoursesInMonthChart] =
+    useState<ChartData<'line'>>()
+
+  useEffect(() => {
+    getTotalRegistrationFake<Registered>().then(registration =>
+      setRegistered(registration.data)
+    )
+
+    getTotalRegistrationByCourseMonth<CoursesByMonths[]>().then(response => {
+      setCourseByMonths(response.data)
+    })
+
+    getTotalRegistrationByCourseDayInMonth<CoursesByDayInMonths[]>().then(
+      response => setCourseByDayInMonths(response.data)
+    )
   })
 
-  const [coursesData] = useState({
-    datasets: [
-      {
-        label: [courses.courseA.label, courses.courseB.label],
-        data: [courses.courseA.total, courses.courseB.total],
-        backgroundColor: [theme.colors.orange, theme.colors.blueDark]
-      }
-    ]
-  })
+  useEffect(() => {
+    if (!registered?.data) return
 
-  const [courseDataLine] = useState({
-    labels: months.map(data => ''),
-    datasets: [
-      {
-        label: 'CURSO A',
+    const backgrounds = [theme.colors.blueDark, theme.colors.orange]
+    const data = registered.data.flatMap(courseData => courseData.total)
+    const labels = registered.data.map(info => info.label)
+    setCoursesDataPercentage({
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor: backgrounds
+        }
+      ]
+    })
+  }, [registered])
+
+  useEffect(() => {
+    if (!coursesByMonths) return
+
+    const backgrounds = [theme.colors.blueDark, theme.colors.orange]
+    const months = coursesByMonths
+      ?.flatMap(data => data.data)
+      .map(data => data.month)
+    const monthsRemovedDuplicates = removeDuplicateArrayValue(months)
+
+    setDataCoursesChart({
+      labels: monthsRemovedDuplicates,
+      datasets: coursesByMonths.map((courseData, index) => ({
+        label: courseData.name,
+        data: courseData.data.map(data => data.total),
+        backgroundColor: backgrounds[index % 2]
+      }))
+    })
+  }, [coursesByMonths])
+
+  useEffect(() => {
+    if (!coursesByDayInMonths) return
+
+    const backgrounds = [theme.colors.blueDark, theme.colors.orange]
+    const days = coursesByDayInMonths
+      ?.flatMap(data => data.data)
+      .map(data => data.day)
+    const daysRemovedDuplicates = removeDuplicateArrayValue(days)
+    const values = coursesByDayInMonths
+      ?.flatMap(data => data.data)
+      .map(data => data.total)
+    const maxValue = getMaxValueInArray(values)
+
+    setMaxValueCoursesByDayInMonth(maxValue)
+
+    setDataCoursesInMonthChart({
+      labels: daysRemovedDuplicates,
+      datasets: coursesByDayInMonths.map((courseData, index) => ({
+        label: courseData.name,
+        data: courseData.data.map(data => data.total),
         fill: true,
-        data: courseA.map(data => data.userGain),
-        backgroundColor: [theme.colors.orange],
-        tension: 0.4
-      },
-      {
-        label: 'CURSO B',
-        fill: true,
-        data: courseB.map(data => data.userGain),
-        backgroundColor: [theme.colors.blueDark],
-        tension: 0.4
-      }
-    ]
-  })
+        tension: 0.4,
+        backgroundColor: backgrounds[index % 2]
+      }))
+    })
+  }, [coursesByDayInMonths])
 
   return (
     <>
@@ -102,7 +154,7 @@ const Home: React.FC = () => {
             <Card bgColor='var(--white)'>
               <div className='content'>
                 <strong>Total de Inscritos</strong>
-                <p>{registered}</p>
+                <p>{registered?.total || 0}</p>
               </div>
             </Card>
           </div>
@@ -111,103 +163,29 @@ const Home: React.FC = () => {
             <div className='grid-chart-row-1'>
               <div className='column'>
                 <div className='container-chart'>
-                  <BarChart
-                    data={userData}
-                    options={{
-                      aspectRatio: 3,
-                      layout: {
-                        padding: {
-                          top: 30,
-                          left: 50,
-                          right: 20,
-                          bottom: 0
-                        }
-                      },
-                      plugins: {
-                        title: {
-                          display: true,
-                          text: 'Inscritos',
-                          position: 'top',
-                          align: 'start',
-                          padding: {
-                            top: 0,
-                            bottom: 30
-                          },
-                          font: {
-                            size: 20
-                          }
-                        },
-                        legend: {
-                          display: true,
-                          position: 'right',
-                          labels: {
-                            boxWidth: 20,
-                            boxHeight: 20,
-                            textAlign: 'center',
-                            font: {
-                              size: 14
-                            }
-                          }
-                        }
-                      }
-                    }}
-                  />
+                  {dataCoursesChart && (
+                    <BarChart
+                      data={dataCoursesChart}
+                      options={registrationBarChartOptions}
+                    />
+                  )}
                 </div>
 
                 <div className='container-chart'>
                   <div className='chart-flex'>
                     <div className='chart'>
-                      <LineChart
-                        data={courseDataLine}
-                        options={{
-                          aspectRatio: 3,
-
-                          layout: {
-                            padding: {
-                              top: 30,
-                              left: 10,
-                              right: 20,
-                              bottom: 0
-                            }
-                          },
-                          plugins: {
-                            legend: {
-                              display: true,
-                              position: 'left',
-                              align: 'center',
-
-                              labels: {
-                                boxWidth: 25,
-                                boxHeight: 25,
-                                textAlign: 'center',
-
-                                font: {
-                                  size: 14
-                                }
-                              }
-                            }
-                          },
-                          scales: {
-                            x: {
-                              display: true,
-                              title: {
-                                display: true
-                              }
-                            },
-                            y: {
-                              display: true,
-                              title: {
-                                display: true
-                              },
-                              suggestedMin: 0,
-                              suggestedMax: 60
-                            }
-                          }
-                        }}
-                      />
+                      {dataCoursesInMonthChart &&
+                        maxValueCoursesByDayInMonth && (
+                          <LineChart
+                            data={dataCoursesInMonthChart}
+                            options={datesRegistrationBarChartOptions(
+                              maxValueCoursesByDayInMonth
+                            )}
+                          />
+                        )}
                     </div>
 
-                    <div>
+                    <div className='calendar'>
                       <Calendar />
                     </div>
                   </div>
@@ -215,31 +193,12 @@ const Home: React.FC = () => {
               </div>
 
               <div className='container-chart'>
-                <DoughnutChart
-                  data={coursesData}
-                  options={{
-                    layout: {
-                      padding: {
-                        top: 30,
-                        left: 20,
-                        right: 20,
-                        bottom: 0
-                      }
-                    },
-                    plugins: {
-                      title: {
-                        display: true,
-                        text: [courses.courseA.label, courses.courseB.label],
-                        position: 'bottom',
-                        align: 'center',
-
-                        font: {
-                          size: 20
-                        }
-                      }
-                    }
-                  }}
-                />
+                {coursesDataPercentage && (
+                  <DoughnutChart
+                    data={coursesDataPercentage}
+                    options={percentageRegistrationDoughnutChat}
+                  />
+                )}
               </div>
             </div>
           </Charts>

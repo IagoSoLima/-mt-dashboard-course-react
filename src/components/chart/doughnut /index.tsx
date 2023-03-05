@@ -10,7 +10,7 @@ ChartJS.register(DoughnutController)
 
 interface Props {
   data: any
-  options?: ChartOptions
+  options?: ChartOptions<'doughnut'>
 }
 export const DoughnutChart: React.FC<Props> = props => {
   return <Doughnut {...props} />
