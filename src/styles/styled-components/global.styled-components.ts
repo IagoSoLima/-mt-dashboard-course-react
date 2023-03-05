@@ -10,12 +10,11 @@ export default createGlobalStyle`
   html, body {
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: var(--background-dark);
   }
 
   *, button, input {
-    border: 0;
-    background: 0;
+   
     font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }
@@ -44,10 +43,6 @@ export default createGlobalStyle`
     max-width: 100%;
   }
 
-  .container{
-    width: 100%;
-    float: left;
-  }
 
   .detected-scroll{
     overflow: auto;
@@ -64,12 +59,6 @@ export default createGlobalStyle`
   .pointer {
     cursor: pointer;
 
-  }
-
-  .hiddenDesk{
-    @media (min-width: 1280px) {
-      display: none;
-    }
   }
 
   :root {
@@ -97,7 +86,6 @@ export default createGlobalStyle`
     --nav-height: 80px;
     --nav-width: 300px;
 
-    color-scheme: light dark;
 
     
 
@@ -113,9 +101,7 @@ export default createGlobalStyle`
     }
   }
 
-  @media (prefers-color-scheme: light) {
-      
-    }
+  
 
   a {
     color: #919191

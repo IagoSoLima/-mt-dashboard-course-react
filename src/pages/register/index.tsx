@@ -3,10 +3,10 @@ import Button from '~/components/button'
 import Input from '~/components/input'
 import Select from '~/components/select'
 import { initialState, reducer } from './reducer'
-import { Navigate } from '~/routes/router-dom/components'
 import { useNavigate } from '~/routes/router-dom/hooks'
 
 import * as S from './styles'
+import SideBar from '~/components/side-bar'
 
 const stateOptions = [
   {
@@ -79,70 +79,77 @@ const Register: React.FC = () => {
   }
 
   return (
-    <S.Container className='container'>
-      <S.Form>
-        <h1 className='title'>Cadastro de Ingressantes</h1>
-        <section>
-          <fieldset>
-            <label htmlFor='name'> Nome </label>
-            <Input
-              type='text'
-              id='name'
-              name='name'
-              onChange={e => {
-                dispatch({ type: 'SET_NAME', payload: e.target.value })
-              }}
-            />
-          </fieldset>
-          <fieldset>
-            <label htmlFor='course'> Curso </label>
-            <Select
-              id='course'
-              name='course'
-              onChange={e => {
-                dispatch({ type: 'SET_COURSE', payload: e.target.value })
-              }}
-              options={courseOptions}
-            />
-          </fieldset>
-          <fieldset>
-            <label htmlFor='state'> Estado </label>
-            <Select
-              id='state'
-              name='state'
-              onChange={e => {
-                dispatch({ type: 'SET_STATE', payload: e.target.value })
-              }}
-              options={stateOptions}
-            />
-          </fieldset>
-          <fieldset>
-            <label htmlFor='city'> Cidade </label>
-            <Select
-              id='city'
-              name='city'
-              onChange={e => {
-                dispatch({ type: 'SET_CITY', payload: e.target.value })
-              }}
-              options={citiesOption}
-              helperText='Por favor selecione um estado'
-            />
-          </fieldset>
-          <div className='buttons'>
-            <Button
-              type='button'
-              bgColor='var(--yellow)'
-              onClick={() => navigation('/')}
-            >
-              Voltar
-            </Button>
-            <Button type='submit' bgColor='var(--green)' onClick={handleSubmit}>
-              Gravar
-            </Button>
-          </div>
-        </section>
-      </S.Form>
-    </S.Container>
+    <>
+      <SideBar />
+      <S.Container className='container'>
+        <S.Form>
+          <h1 className='title'>Cadastro de Ingressantes</h1>
+          <section>
+            <fieldset>
+              <label htmlFor='name'> Nome </label>
+              <Input
+                type='text'
+                id='name'
+                name='name'
+                onChange={e => {
+                  dispatch({ type: 'SET_NAME', payload: e.target.value })
+                }}
+              />
+            </fieldset>
+            <fieldset>
+              <label htmlFor='course'> Curso </label>
+              <Select
+                id='course'
+                name='course'
+                onChange={e => {
+                  dispatch({ type: 'SET_COURSE', payload: e.target.value })
+                }}
+                options={courseOptions}
+              />
+            </fieldset>
+            <fieldset>
+              <label htmlFor='state'> Estado </label>
+              <Select
+                id='state'
+                name='state'
+                onChange={e => {
+                  dispatch({ type: 'SET_STATE', payload: e.target.value })
+                }}
+                options={stateOptions}
+              />
+            </fieldset>
+            <fieldset>
+              <label htmlFor='city'> Cidade </label>
+              <Select
+                id='city'
+                name='city'
+                onChange={e => {
+                  dispatch({ type: 'SET_CITY', payload: e.target.value })
+                }}
+                options={citiesOption}
+                helperText='Por favor selecione um estado'
+              />
+            </fieldset>
+            <div className='buttons'>
+              <Button
+                type='button'
+                bgColor='var(--yellow)'
+                onClick={() => navigation('/')}
+              >
+                Voltar
+              </Button>
+              <Button
+                type='submit'
+                bgColor='var(--green)'
+                onClick={handleSubmit}
+              >
+                Gravar
+              </Button>
+            </div>
+          </section>
+        </S.Form>
+      </S.Container>
+    </>
   )
 }
 
