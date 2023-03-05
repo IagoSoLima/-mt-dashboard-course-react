@@ -1,2 +1,2 @@
 export * from './link.route'
-export * from './navigate.route'
+export * from './nav-link.route'

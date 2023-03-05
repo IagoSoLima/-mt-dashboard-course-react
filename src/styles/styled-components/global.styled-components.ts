@@ -84,6 +84,9 @@ export default createGlobalStyle`
     --yellow: ${props => props.theme.colors.yellow};
     --orange: ${props => props.theme.colors.orange};
     --blue: ${props => props.theme.colors.blue};
+    --blue-dark: ${props => props.theme.colors.blueMedium};
+    --blue-dark: ${props => props.theme.colors.blueDark};
+    --blue-darker: ${props => props.theme.colors.blueDarker};
 
     --background-light: ${props => props.theme.colors.backgroundLight};
     --background-dark: ${props => props.theme.colors.backgroundDark};
@@ -92,6 +95,7 @@ export default createGlobalStyle`
 
 
     --nav-height: 80px;
+    --nav-width: 300px;
 
     color-scheme: light dark;
 

@@ -9,6 +9,9 @@ const theme = {
     yellow: '#F0EE05',
     orange: '#ee7727',
     blue: '#188CFF',
+    blueMedium: '#05589f',
+    blueDark: '#043158',
+    blueDarker: '#022c50',
 
     backgroundLight: '#F7F7F7',
     backgroundDark: '#E9E9E9',
