@@ -31,16 +31,11 @@ export const datesRegistrationBarChartOptions = (
   },
   scales: {
     x: {
-      display: true,
-      title: {
-        display: true
-      }
+      display: false
     },
     y: {
-      display: true,
-      title: {
-        display: true
-      },
+      display: false,
+
       suggestedMin: 0,
       suggestedMax: maxValue + 10
     }
