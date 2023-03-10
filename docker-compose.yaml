@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  app-react:
+    build: .
+    container_name: ${APP_CONTAINER_NAME}
+    command: npm run dev
+    tty: true
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    volumes:
+      - .:/app
